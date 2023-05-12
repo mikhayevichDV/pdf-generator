@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  main:
+    container_name: main
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    command: npm run start:dev
+    depends_on:
+      - db
+    restart: always
+  db:
+    container_name: mysql-assigment
+    image: mysql:latest
+    restart: always
+    env_file:
+      - environments/.env
+    environment:
+      - MYSQL_ROOT_PASSWORD = ${DB_PASSWORD}
+      - MYSQL_DATABASE = ${DB_NAME}
+      - MYSQL_USER = ${DB_USER}
+    volumes:
+      -  ./tmp/db:/var/lib/mysql
+    ports:
+      - 3307:${DB_PORT}
